@@ -2,7 +2,7 @@
 
 namespace SpectreTablesToRefactor.Models
 {
-    internal class Product
+    public class Product
     {
         public int ProductId { get; set; }
 
@@ -10,7 +10,6 @@ namespace SpectreTablesToRefactor.Models
 
         public decimal Price { get; set; }
 
-        // Lägg till Category-egenskapen som refererar till Category-enumen
         public Category Category { get; set; }
     }
 }

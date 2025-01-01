@@ -1,46 +1,48 @@
 ﻿using Spectre.Console;
 using SpectreTablesToRefactor.Models;
+using SpectreTablesToRefactor.Enums;
+using System;
+using System.Collections.Generic;
 
-// Lägger man till ett ; på slutet så slipper man {} runt namepsace!
-namespace SpectreTablesToRefactor.UI;
-
-internal class DisplayItems
+namespace SpectreTablesToRefactor.UI
 {
-    static internal void ShowProductTable(List<Product> products)
+    public static class DisplayItems
     {
-        var table = new Table();
-        table.AddColumn("Id");
-        table.AddColumn("Namn");
-        table.AddColumn("Pris");
-
-        foreach (Product product in products)
+        public static void ShowProductTable(List<Product> products)
         {
-            table.AddRow(
-                product.ProductId.ToString(),
-                product.Name,
-                product.Price.ToString()
+            var table = new Table();
+
+            table.AddColumn("Id");
+            table.AddColumn("Name");
+            table.AddColumn("Price");
+            table.AddColumn("Category");
+
+            foreach (var product in products)
+            {
+                table.AddRow(
+                    product.ProductId.ToString(),
+                    product.Name,
+                    product.Price.ToString("C"),
+                    product.Category.GetDescription() 
                 );
+            }
+
+            AnsiConsole.Render(table);
         }
 
-        AnsiConsole.Write(table);
+        public static void ShowProduct(Product product)
+        {
+            var table = new Table();
 
-        Console.WriteLine("Valfri tangent för att återgå till huvudmeny");
-        Console.ReadLine();
-        Console.Clear();
-    }
+            table.AddColumn("Property");
+            table.AddColumn("Value");
 
-    static internal void ShowProduct(Product product)
-    {
-        var panel = new Panel($@"Id: {product.ProductId}
-Namn: {product.Name}
-Pris: {product.Price}");
-        panel.Header = new PanelHeader("Product Info");
-        panel.Padding = new Padding(2, 2, 2, 2);
+            table.AddRow("Id", product.ProductId.ToString());
+            table.AddRow("Name", product.Name);
+            table.AddRow("Price", product.Price.ToString("C"));
+            table.AddRow("Category", product.Category.GetDescription()); 
 
-        AnsiConsole.Write(panel);
-
-        Console.WriteLine("Valfri tangent för att återgå till huvudmeny");
-        Console.ReadLine();
-        Console.Clear();
+            AnsiConsole.Render(table);
+        }
     }
 }

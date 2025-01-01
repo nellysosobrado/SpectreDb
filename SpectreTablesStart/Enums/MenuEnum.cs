@@ -4,51 +4,49 @@ using System.Reflection;
 
 namespace SpectreTablesToRefactor.Enums
 {
-    internal enum Category
+    public enum Category
     {
-        [Description("Kök")]
+        [Description("Kitchen")]
         Kitchen,
 
-        [Description("Städ")]
+        [Description("Cleaning")]
         Cleaning,
 
-        [Description("Personvård")]
+        [Description("Health")]
         PersonalCare,
 
-        [Description("Hem")]
+        [Description("Home")]
         Home
     }
 
-    internal enum MenuOptions
+    public enum MenuOptions
     {
-        [Description("Lägg till en produkt")]
+        [Description("Add product")]
         AddProduct,
 
-        [Description("Visa alla produkter")]
+        [Description("Display all products")]
         ViewAllProducts,
 
-        [Description("Visa en specifik produkt")]
+        [Description("Display a specific product")]
         ViewProduct,
 
-        [Description("Uppdatera en produkt")]
+        [Description("Update product")]
         UpdateProduct,
 
-        [Description("Ta bort en produkt")]
+        [Description("Remove product")]
         DeleteProduct,
 
-        [Description("Avsluta programmet")]
+        [Description("Exit program")]
         Exit
     }
 
-    internal static class MenuEnum
+    public static class MenuEnum
     {
-        // Extension-metod som returnerar beskrivningen för en Enum
         public static string GetDescription(this Enum value)
         {
             var field = value.GetType().GetField(value.ToString());
             if (field == null)
             {
-                // Detta borde egentligen aldrig hända om du arbetar med giltiga enums
                 return value.ToString();
             }
 

@@ -1,74 +1,59 @@
 ﻿using SpectreTablesToRefactor.Data;
 using SpectreTablesToRefactor.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-// Lägger man till ett ; på slutet så slipper man {} runt namepsace!
-namespace SpectreTablesStart.Services;
-
-// SINGLETON!
-// Vi vill hela tiden hämta samma instance så att vår data är korrekt!
-// Om vi tog bort Singleton och skapade en ny instance varje gång...
-// skulle endast vår 10 seedade poster finnas kvar! 
-internal class ProductService
+namespace SpectreTablesStart.Services
 {
-    // Statisk variabel för att hålla singleton-instansen
-    private static ProductService _instance;
-
-    // Låsmekanism för trådsäkerhet
-    private static readonly object _lock = new object();
-
-    // Privat konstruktor för att förhindra externa instanser
-    private ProductService()
+    internal class ProductService
     {
-        Db = new Database();
-    }
+        private readonly ApplicationDbContext _dbContext;
 
-    // Statisk metod för att hämta singleton-instansen
-    public static ProductService GetInstance()
-    {
-        // Dubbelkollad låsning för att säkerställa trådsäkerhet
-        if (_instance == null)
+        public ProductService(ApplicationDbContext dbContext)
         {
-            lock (_lock)
+            _dbContext = dbContext;
+        }
+
+        internal void AddProduct(Product product)
+        {
+            _dbContext.Products.Add(product);
+            _dbContext.SaveChanges();
+        }
+
+        internal List<Product> GetProducts()
+        {
+            return _dbContext.Products.ToList();
+        }
+
+        internal Product GetProductById(int id)
+        {
+            return _dbContext.Products.SingleOrDefault(x => x.ProductId == id);
+        }
+
+        internal void UpdateProduct(Product product)
+        {
+            var productToUpdate = _dbContext.Products.SingleOrDefault(x => x.ProductId == product.ProductId);
+
+            if (productToUpdate != null)
             {
-                if (_instance == null)
-                {
-                    _instance = new ProductService();
-                }
+                productToUpdate.Name = product.Name;
+                productToUpdate.Price = product.Price;
+                productToUpdate.Category = product.Category;
+                _dbContext.SaveChanges();
             }
         }
-        return _instance;
-    }
 
-    public Database Db { get; private set; }
+        internal void DeleteProduct(Product product)
+        {
+            var productToDelete = _dbContext.Products.SingleOrDefault(x => x.ProductId == product.ProductId);
 
-
-    internal void AddProduct(Product product)
-    {
-        Db.Products.Add(product);
-    }
-    internal List<Product> GetProducts()
-    {
-        return Db.Products;
-    }
-
-    internal Product GetProductById(int id)
-    {
-        // returnera null om Id inte hittas!
-        return Db.Products.SingleOrDefault(x => x.ProductId == id);
-    }
-
-    internal void UpdateProduct(Product product)
-    {
-        // returnera null om Id inte hittas!
-        var productToUpdate = Db.Products
-            .SingleOrDefault(x => x.ProductId == product.ProductId);
-
-        productToUpdate.Name = product.Name;
-        productToUpdate.Price = product.Price;
-    }
-
-    internal void DeleteProduct(Product product)
-    {
-        Db.Products.Remove(product);
+            if (productToDelete != null)
+            {
+                _dbContext.Products.Remove(productToDelete);
+                _dbContext.SaveChanges();
+            }
+        }
     }
 }
