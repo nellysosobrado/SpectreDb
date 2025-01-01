@@ -1,11 +1,16 @@
-﻿// Lägger man till ett ; på slutet så slipper man {} runt namepsace!
-namespace SpectreTablesToRefactor.Models;
+﻿using SpectreTablesToRefactor.Enums;
 
-internal class Product
+namespace SpectreTablesToRefactor.Models
 {
-    public int ProductId { get; set; }
+    internal class Product
+    {
+        public int ProductId { get; set; }
 
-    public string Name { get; set; }
+        public string Name { get; set; }
 
-    public decimal Price { get; set; }
+        public decimal Price { get; set; }
+
+        // Lägg till Category-egenskapen som refererar till Category-enumen
+        public Category Category { get; set; }
+    }
 }
